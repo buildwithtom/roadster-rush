@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#152c2a">
+  <meta name="description" content="A little roadster. A little chaos. Fly through the Indian streets in this one-button arcade game.">
+  <title>Roadster Rush — Indian Streets</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Crect width=%2740%27 height=%2740%27 rx=%278%27 fill=%27%23163330%27/%3E%3Ctext x=%278%27 y=%2730%27 font-size=%2730%27 font-family=%27Arial%27 font-weight=%27bold%27 fill=%27%23dcf78a%27%3ER%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <a class="brand" href="./" aria-label="Roadster Rush home"><span class="brand-mark">R<span>↗</span></span> ROADSTER<span class="brand-light">RUSH</span></a>
+      <span class="edition"><span class="live-dot"></span> THE FIRST FLIGHT · VOL. 01</span>
+    </header>
+    <section class="intro">
+      <div><p class="eyebrow">ONE CAR. TWO THRUSTERS. ABSOLUTE CHAOS.</p><h1>Streets below.<br><em>Sky’s the limit.</em></h1></div>
+      <p class="intro-copy">Meet your new shortcut through traffic.<br>Tap to fly. Mind the wires. Enjoy the ride.</p>
+    </section>
+    <section class="arcade" aria-label="Roadster Rush game">
+      <div class="game-topbar"><span><span class="live-dot"></span> INDIAN STREETS</span><span class="run-label">ENDLESS RUN <span class="divider">/</span> <span id="flight-state">READY FOR TAKEOFF</span></span></div>
+      <div class="stage" id="stage">
+        <canvas id="game" width="960" height="540" tabindex="0" aria-label="Flying roadster game. Press Space or tap to thrust. Avoid obstacles and the ground.">Your browser needs HTML5 Canvas to play Roadster Rush.</canvas>
+        <div class="hud"><div><span class="hud-label">SCORE</span><strong id="score">00</strong></div><div class="best"><span class="hud-label">PERSONAL BEST</span><strong id="best">00</strong></div></div>
+        <div class="overlay" id="overlay">
+          <div class="overlay-card"><span class="tag" id="overlay-tag">YOUR DAILY DOSE OF AIR TIME</span><h2 id="overlay-title">Skip the traffic.</h2><p id="overlay-copy">The streets are busy. The sky is yours.<br>Keep your roadster flying between the obstacles.</p><button id="play" type="button">Let’s fly <span>↗</span></button><p class="start-hint" id="start-hint">PRESS SPACE OR TAP TO START</p></div>
+        </div>
+        <div class="in-game-hint" id="in-game-hint" hidden>SPACE / TAP TO THRUST</div>
+      </div>
+      <div class="game-bottom"><span><kbd>SPACE</kbd> or <span class="tap-icon">☝</span> tap to thrust</span><span>Stay airborne. Find your flow. <span class="arrow">↗</span></span></div>
+    </section>
+    <section class="details" aria-label="How to play"><div><span class="step">01</span><p><strong>A little lift</strong><br>Each tap fires both thrusters.</p></div><div><span class="step">02</span><p><strong>Find the gap</strong><br>Dodge street poles and barricades.</p></div><div><span class="step">03</span><p><strong>Go one better</strong><br>Pass obstacles. Beat your best.</p></div></section>
+    <footer><span>BUILT FOR THE JOY OF THE RIDE.</span><span>A fictional roadster. An independent little game.</span></footer>
+    <p id="announcer" class="sr-only" role="status" aria-live="polite"></p>
+  </main>
+</body>
+</html>
