@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#152c2a">
   <meta name="description" content="A little roadster. A little chaos. Fly through the Indian streets in this one-button arcade game.">
   <title>Roadster Rush — Indian Streets</title>
@@ -11,29 +11,65 @@
   <script type="module" src="js/main.js"></script>
 </head>
 <body>
-  <main>
-    <header class="masthead">
-      <a class="brand" href="./" aria-label="Roadster Rush home"><span class="brand-mark">R<span>↗</span></span> ROADSTER<span class="brand-light">RUSH</span></a>
-      <span class="edition"><span class="live-dot"></span> THE FIRST FLIGHT · VOL. 01</span>
+  <main class="arcade" id="arcade" aria-label="Roadster Rush">
+    <div class="stage" id="stage">
+      <canvas id="game" width="960" height="540" tabindex="0" aria-label="Roadster Rush. Space or tap to thrust. P or Escape to pause.">Your browser needs HTML5 Canvas to play.</canvas>
+      <div class="vignette" aria-hidden="true"></div>
+    </div>
+
+    <header class="hud" id="hud" hidden>
+      <div class="scoreboard"><div><span class="label">SCORE</span><strong id="score">00</strong></div><div class="best"><span class="label">PERSONAL BEST</span><strong id="best">00</strong></div></div>
+      <button class="icon-button" id="pause" type="button" aria-label="Pause game" title="Pause (P / Escape)">Ⅱ</button>
     </header>
-    <section class="intro">
-      <div><p class="eyebrow">ONE CAR. TWO THRUSTERS. ABSOLUTE CHAOS.</p><h1>Streets below.<br><em>Sky’s the limit.</em></h1></div>
-      <p class="intro-copy">Meet your new shortcut through traffic.<br>Tap to fly. Mind the wires. Enjoy the ride.</p>
-    </section>
-    <section class="arcade" aria-label="Roadster Rush game">
-      <div class="game-topbar"><span><span class="live-dot"></span> INDIAN STREETS</span><span class="run-label">ENDLESS RUN <span class="divider">/</span> <span id="flight-state">READY FOR TAKEOFF</span></span></div>
-      <div class="stage" id="stage">
-        <canvas id="game" width="960" height="540" tabindex="0" aria-label="Flying roadster game. Press Space or tap to thrust. Avoid obstacles and the ground.">Your browser needs HTML5 Canvas to play Roadster Rush.</canvas>
-        <div class="hud"><div><span class="hud-label">SCORE</span><strong id="score">00</strong></div><div class="best"><span class="hud-label">PERSONAL BEST</span><strong id="best">00</strong></div></div>
-        <div class="overlay" id="overlay">
-          <div class="overlay-card"><span class="tag" id="overlay-tag">YOUR DAILY DOSE OF AIR TIME</span><h2 id="overlay-title">Skip the traffic.</h2><p id="overlay-copy">The streets are busy. The sky is yours.<br>Keep your roadster flying between the obstacles.</p><button id="play" type="button">Let’s fly <span>↗</span></button><p class="start-hint" id="start-hint">PRESS SPACE OR TAP TO START</p></div>
-        </div>
-        <div class="in-game-hint" id="in-game-hint" hidden>SPACE / TAP TO THRUST</div>
+    <button class="icon-button fullscreen" id="fullscreen" type="button" aria-label="Enter fullscreen" title="Enter fullscreen" aria-pressed="false">⛶</button>
+
+    <section class="screen menu-screen" id="menu-screen" aria-labelledby="menu-title">
+      <div class="menu-content">
+        <p class="eyebrow"><span class="live-dot"></span> THE FIRST FLIGHT · VOL. 01</p>
+        <h1 id="menu-title">ROADSTER<br><em>RUSH<span>↗</span></em></h1>
+        <p class="menu-copy">One car. Two thrusters. Absolute chaos.</p>
+        <nav class="menu-actions" aria-label="Main menu">
+          <button class="primary" id="play" type="button">Play <span>↗</span></button>
+          <button class="secondary" id="how-to-play" type="button">How to Play <span>?</span></button>
+          <button class="secondary themes" type="button" disabled>Themes <span class="badge">COMING SOON</span></button>
+        </nav>
+        <p class="shortcut">PRESS SPACE TO FLY</p>
       </div>
-      <div class="game-bottom"><span><kbd>SPACE</kbd> or <span class="tap-icon">☝</span> tap to thrust</span><span>Stay airborne. Find your flow. <span class="arrow">↗</span></span></div>
+      <div class="menu-footer"><span class="theme-chip"><span class="live-dot"></span> INDIAN STREETS</span><span class="footer-note">A little roadster. A little escape.</span></div>
     </section>
-    <section class="details" aria-label="How to play"><div><span class="step">01</span><p><strong>A little lift</strong><br>Each tap fires both thrusters.</p></div><div><span class="step">02</span><p><strong>Find the gap</strong><br>Dodge street poles and barricades.</p></div><div><span class="step">03</span><p><strong>Go one better</strong><br>Pass obstacles. Beat your best.</p></div></section>
-    <footer><span>BUILT FOR THE JOY OF THE RIDE.</span><span>A fictional roadster. An independent little game.</span></footer>
+
+    <section class="screen centered-screen" id="help-screen" aria-labelledby="help-title" hidden>
+      <div class="panel help-panel">
+        <p class="eyebrow">FLIGHT SCHOOL</p><h2 id="help-title">Find your flow.</h2>
+        <ol class="instructions">
+          <li><span>01</span><div><strong>A little lift</strong><p>Press Space or tap the scene. Each press fires both thrusters; gravity does the rest.</p></div></li>
+          <li><span>02</span><div><strong>Find the gap</strong><p>Fly between roadside vehicles and crows at different heights. More birds arrive as your flight continues. Avoid the ground and the top of the sky.</p></div></li>
+          <li><span>03</span><div><strong>Go one better</strong><p>Each vehicle or bird passed earns a point. Beat your personal best.</p></div></li>
+        </ol>
+        <p class="help-note">P / Escape to pause. Your flight also pauses when you leave the tab or window.</p>
+        <button class="primary" id="help-back" type="button">Back to Menu <span>↩</span></button>
+      </div>
+    </section>
+
+    <section class="screen centered-screen" id="pause-screen" aria-labelledby="pause-title" hidden>
+      <div class="panel">
+        <p class="eyebrow">TAKE A BREATHER</p><h2 id="pause-title">Just hovering.</h2>
+        <p id="pause-copy">Your flight is right where you left it.</p>
+        <div class="panel-actions"><button class="primary" id="resume" type="button">Resume <span>↗</span></button><button class="secondary" id="pause-menu" type="button">Main Menu</button></div>
+        <p class="shortcut">P / ESC TO RESUME</p>
+      </div>
+    </section>
+
+    <section class="screen centered-screen" id="over-screen" aria-labelledby="over-title" hidden>
+      <div class="panel">
+        <p class="eyebrow" id="over-tag">FLIGHT COMPLETE</p><h2 id="over-title">One more flight?</h2><p>Every flight is a fresh start.</p>
+        <div class="results"><div><span class="label">YOUR SCORE</span><strong id="final-score">00</strong></div><div><span class="label">PERSONAL BEST</span><strong id="final-best">00</strong></div></div>
+        <div class="panel-actions"><button class="primary" id="retry" type="button">Retry <span>↗</span></button><button class="secondary" id="over-menu" type="button">Main Menu</button></div>
+        <p class="shortcut">SPACE TO TRY AGAIN</p>
+      </div>
+    </section>
+    <p class="flight-hint" id="in-game-hint" hidden>SPACE / TAP TO THRUST</p>
+    <p class="toast" id="fullscreen-message" role="status" hidden></p>
     <p id="announcer" class="sr-only" role="status" aria-live="polite"></p>
   </main>
 </body>
