@@ -8,8 +8,13 @@ export function blendColor(from, to, amount) {
   const b=to.slice(1).match(/../g).map(v=>parseInt(v,16));
   return '#'+a.map((v,i)=>Math.round(v+(b[i]-v)*t).toString(16).padStart(2,'0')).join('');
 }
-export function lightingAt(seconds=0) {
-  const progress=clamp((seconds-60)/30);
+// One cycle: day 60s, sunset 30s, night 60s, dawn 30s. Starting
+// at night offsets the same cycle by half a period, including its initial hold.
+export const LIGHT_CYCLE = Object.freeze({ hold:60, transition:30, half:90, period:180 });
+export function lightingAt(seconds=0, startingMode='day') {
+  const time=Number.isFinite(seconds)?Math.max(0,seconds):0;
+  const phase=(time+(startingMode==='night'?LIGHT_CYCLE.half:0))%LIGHT_CYCLE.period;
+  const progress=phase<60?0:phase<90?(phase-60)/30:phase<150?1:1-(phase-150)/30;
   const sunset=smooth(progress*2);
   const night=smooth((progress-.35)/.65);
   const lights=smooth((progress-.18)/.6);

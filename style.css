@@ -120,3 +120,51 @@ h2 { font-size: clamp(30px, 4vw, 39px); margin: 0 0 13px; line-height: 1.08; let
   .help-panel .primary { min-height: 40px; padding: 10px 20px; }
   .panel .help-note { margin-bottom: 12px !important; padding-top: 10px; }
 }
+
+.starting-mode { border: 0; padding: 0; margin: 5px 0 0; min-width: 0; }
+.starting-mode legend { padding: 0; margin-bottom: 8px; font: 9px monospace; letter-spacing: 1.5px; color: var(--muted); text-align: left; }
+.mode-options { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.mode-options label { position: relative; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mode-options input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.mode-options label > span { display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; border: 1px solid #cfe1bf44; border-radius: 6px; background: #dceace09; color: var(--muted); font-size: 12px; font-weight: bold; }
+.mode-options label > span > span { font-size: 19px; line-height: 1; }
+.mode-options input:checked + span { background: #dcf78a1a; border-color: var(--lime); color: var(--lime); }
+.mode-options input:focus-visible + span { outline: 3px solid var(--lime); outline-offset: 3px; }
+.mode-options label:hover > span { border-color: #dceaaeaa; }
+.starting-mode p { font-size: 10px; font-weight: normal; color: var(--muted); margin: 9px 0 0; line-height: 1.5; text-align: left; }
+@media (max-height: 700px) and (orientation: portrait) {
+  .menu-screen { padding: 50px 24px 65px; }
+  h1 { font-size: clamp(48px, 13vw, 64px); }
+  .menu-content .eyebrow { margin-bottom: 16px; }
+  .menu-copy { margin: 14px 0 18px; font-size: 11px; }
+  .menu-actions .primary, .menu-actions .secondary { min-height: 44px; padding: 12px 20px; }
+  .menu-content .shortcut { margin-top: 12px; }
+  .menu-footer { bottom: max(16px, env(safe-area-inset-bottom)); }
+}
+@media (max-height: 570px) and (orientation: landscape) {
+  .starting-mode { margin-top: 0; }
+  .starting-mode legend { font-size: 8px; margin-bottom: 5px; }
+  .starting-mode p { margin-top: 5px; font-size: 9px; }
+}
+
+/* Keep both weather and time choices reachable on compact arcade screens. */
+@media (min-height: 571px) and (max-height: 800px) and (orientation: landscape) {
+  .menu-content { display: grid; grid-template-columns: 1fr 260px; column-gap: 40px; width: min(850px, 100%); align-items: center; }
+  .menu-content .eyebrow, .menu-content h1, .menu-copy { grid-column: 1; }
+  .menu-content h1 { font-size: clamp(48px, 7vw, 90px); }
+  .menu-copy { margin-bottom: 0; }
+  .menu-actions { grid-column: 2; grid-row: 1 / 4; width: 100%; }
+  .menu-content .shortcut { grid-column: 2; text-align: center; }
+}
+@media (max-height: 700px) and (orientation: portrait) {
+  .weather-mode p { display: none; }
+  .menu-content .eyebrow { margin-bottom: 12px; }
+  .menu-copy { margin: 12px 0 16px; }
+  .starting-mode p { font-size: 9px; margin-top: 6px; }
+}
+@media (max-height: 450px) and (orientation: landscape) {
+  .menu-screen { padding-top: 12px; padding-bottom: 40px; }
+  .menu-actions { gap: 8px; }
+  .menu-actions .primary, .menu-actions .secondary { min-height: 40px; padding: 9px 18px; }
+  .weather-mode p, .menu-content .shortcut { display: none; }
+}

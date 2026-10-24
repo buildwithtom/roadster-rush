@@ -1,6 +1,7 @@
 import { Game, WORLD, readBest, saveBest } from './game.js';
 import { indianStreets } from './themes/indian-streets.js';
 import { getViewport } from './viewport.js';
+import { birdAppearanceAt } from './themes/bird-appearance.js';
 
 const $ = selector => document.querySelector(selector);
 const arcade = $('#arcade');
@@ -8,8 +9,13 @@ const canvas = $('#game');
 const ctx = canvas.getContext('2d');
 const stage = $('#stage');
 const screens = { menu: $('#menu-screen'), help: $('#help-screen'), paused: $('#pause-screen'), over: $('#over-screen') };
-const game = new Game();
 const theme = indianStreets;
+let startingMode = 'day';
+let runStartingMode = startingMode;
+let weather = 'clear';
+let runWeather = weather;
+const game = new Game(Math.random, (elapsed, wave) =>
+  birdAppearanceAt(theme.lighting(elapsed, runStartingMode).night, wave));
 const STEP = 1 / 120;
 const format = value => String(value).padStart(2, '0');
 let storage;
@@ -42,6 +48,8 @@ function showScreen(next, focusSelector) {
   resetClock();
 }
 function start() {
+  runStartingMode = startingMode;
+  runWeather = weather;
   game.reset();
   game.flap();
   $('#score').textContent = format(game.score);
@@ -77,6 +85,26 @@ function gameOver() {
   $('#announcer').textContent = `Flight complete. Score ${game.score}. Personal best ${best}. Retry or return to the main menu.`;
 }
 
+document.querySelectorAll('input[name="starting-mode"]').forEach(input => {
+  input.addEventListener('change', () => {
+    if (!input.checked || screen !== 'menu') return;
+    startingMode = input.value === 'night' ? 'night' : 'day';
+    $('#cycle-description').textContent = startingMode === 'night'
+      ? 'Night → day → night. The journey keeps going.'
+      : 'Day → night → day. The journey keeps going.';
+    $('#announcer').textContent = `Start at ${startingMode}. Day and night will cycle throughout your flight.`;
+  });
+});
+document.querySelectorAll('input[name="weather"]').forEach(input => {
+  input.addEventListener('change', () => {
+    if (!input.checked || screen !== 'menu') return;
+    weather = input.value === 'rain' ? 'rain' : 'clear';
+    $('#weather-description').textContent = weather === 'rain'
+      ? 'Monsoon skies. Same flight, rain or shine.'
+      : 'Open skies. The classic Indian Streets flight.';
+    $('#announcer').textContent = `${weather === 'rain' ? 'Rainy' : 'Clear'} weather selected. Day and night will continue to cycle.`;
+  });
+});
 $('#play').addEventListener('click', start);
 $('#retry').addEventListener('click', start);
 $('#how-to-play').addEventListener('click', () => showScreen('help', '#help-back'));
@@ -102,7 +130,7 @@ window.addEventListener('keydown', event => {
   if (event.code !== 'Space') return;
   // Let focused buttons use native keyboard activation. Space on How to Play,
   // Main Menu, or fullscreen must never also trigger a flight impulse.
-  if (event.target.closest?.('button')) return;
+  if (event.target.closest?.('button, input, select, textarea, [contenteditable="true"]')) return;
   event.preventDefault();
   if (screen === 'playing') game.flap();
   else if (screen === 'menu' || screen === 'over') start();
@@ -146,7 +174,9 @@ document.addEventListener('fullscreenchange', () => {
 
 function render() {
   const { scale, extra, x, y } = viewport;
-  const scene = theme.lighting?.(game.elapsed);
+  const preview = game.state === 'ready';
+  const lighting = theme.lighting?.(game.elapsed, preview ? startingMode : runStartingMode);
+  const scene = theme.weatherScene?.(lighting, preview ? weather : runWeather, preview ? renderTime : game.elapsed) ?? lighting;
   if (scene) scene.viewWidth = Math.min(WORLD.width, (canvas.width - 2 * x) / scale);
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = '#163330';
@@ -171,6 +201,7 @@ function render() {
   ctx.strokeStyle = '#71856a55';
   ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(WORLD.width, 0); ctx.stroke();
+  theme.weather?.(ctx, scene, { width: scene?.viewWidth ?? WORLD.width, top: -y / scale, height: canvas.height / scale });
 }
 function frame(timestamp) {
   const dt = previous ? Math.min((timestamp - previous) / 1000, .05) : 0;

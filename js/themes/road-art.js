@@ -1,4 +1,5 @@
 import { tintRoad } from './lighting.js';
+import { drawWetRoad } from './weather.js';
 
 // Decorative surface only. The game's collision floor remains WORLD.floor.
 const asphalt = '#77766b';
@@ -45,7 +46,7 @@ export function drawRoad(c, distance, top = 474, height = 66, scene) {
         const radius = 15 + noise(id + 10) * 17;
         pothole(c, px, py, radius + 4, '#a8967b', id); // crumbled earthen rim
         pothole(c, px, py + 1, radius, '#515c53', id);
-        pothole(c, px + 2, py + 3, radius * .7, noise(id + 11) > .6 ? '#8c998b' : '#6b6b5c', id);
+        pothole(c, px + 2, py + 3, radius * .7, scene?.rain ? '#91a7a4' : noise(id + 11) > .6 ? '#8c998b' : '#6b6b5c', id);
         for (let j = 0; j < 3; j++) stone(c, px - radius + j * radius, py - 5 - (j % 2) * 4, 2, '#b6a68a');
       } else {
         c.strokeStyle = '#5d665a';c.lineWidth = 1;c.beginPath();
@@ -59,5 +60,6 @@ export function drawRoad(c, distance, top = 474, height = 66, scene) {
     shape(c, '#b5a183', [[x, 474], [x + 120, 474], [x + 120, 477], [x + 91 + noise(col + 1) * 12, 476 + noise(col + 2) * 6], [x + 73, 476], [x + 45 + noise(col + 3) * 20, 480 + noise(col) * 8], [x + 30, 478], [x + 9 + noise(col + 4) * 13, 479 + noise(col + 5) * 5], [x, 479]]);
   }
   tintRoad(c, top, height, scene);
+  drawWetRoad(c, distance, top, height, scene);
   c.restore();
 }

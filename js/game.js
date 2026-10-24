@@ -7,7 +7,9 @@ export function overlaps(a, b) {
   return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
 }
 export class Game {
-  constructor(random = Math.random) { this.random = random; this.reset(); }
+  constructor(random = Math.random, birdAppearance = () => 'crow') {
+    this.random = random; this.birdAppearance = birdAppearance; this.reset();
+  }
   reset() {
     this.state = 'ready'; this.score = 0; this.distance = 0; this.elapsed = 0;
     this.car = { x: 230, y: 230, width: 78, height: 30, velocity: 0, thrust: 0 };
@@ -32,6 +34,7 @@ export class Game {
     if (this.spawned % difficulty.birdEvery === 0) {
       const bird = createEncounter(4, this.random(), difficulty.progress);
       bird.speed = difficulty.birdSpeed;
+      bird.appearance = this.birdAppearance(this.elapsed, this.spawned) === 'bat' ? 'bat' : 'crow';
       this.obstacles.push({ ...bird, x: WORLD.width + 30, passed: false });
       // Occasional late flocks share a predictable lane and leave the same
       // lower escape corridor clear. Never stack birds across the whole sky.

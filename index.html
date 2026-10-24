@@ -31,7 +31,22 @@
         <nav class="menu-actions" aria-label="Main menu">
           <button class="primary" id="play" type="button">Play <span>↗</span></button>
           <button class="secondary" id="how-to-play" type="button">How to Play <span>?</span></button>
-          <button class="secondary themes" type="button" disabled>Themes <span class="badge">COMING SOON</span></button>
+          <fieldset class="starting-mode" aria-describedby="cycle-description">
+            <legend>START YOUR JOURNEY</legend>
+            <div class="mode-options">
+              <label><input type="radio" name="starting-mode" value="day" checked><span><span aria-hidden="true">☀</span> Day</span></label>
+              <label><input type="radio" name="starting-mode" value="night"><span><span aria-hidden="true">☾</span> Night</span></label>
+            </div>
+            <p id="cycle-description">Day → night → day. The journey keeps going.</p>
+          </fieldset>
+          <fieldset class="starting-mode weather-mode" aria-describedby="weather-description">
+            <legend>WEATHER</legend>
+            <div class="mode-options">
+              <label><input type="radio" name="weather" value="clear" checked><span><span aria-hidden="true">◌</span> Clear</span></label>
+              <label><input type="radio" name="weather" value="rain"><span><span aria-hidden="true">☂</span> Rain</span></label>
+            </div>
+            <p id="weather-description">Open skies. The classic Indian Streets flight.</p>
+          </fieldset>
         </nav>
         <p class="shortcut">PRESS SPACE TO FLY</p>
       </div>
@@ -43,7 +58,7 @@
         <p class="eyebrow">FLIGHT SCHOOL</p><h2 id="help-title">Find your flow.</h2>
         <ol class="instructions">
           <li><span>01</span><div><strong>A little lift</strong><p>Press Space or tap the scene. Each press fires both thrusters; gravity does the rest.</p></div></li>
-          <li><span>02</span><div><strong>Find the gap</strong><p>Fly between roadside vehicles and crows at different heights. More birds arrive as your flight continues. Avoid the ground and the top of the sky.</p></div></li>
+          <li><span>02</span><div><strong>Find the gap</strong><p>Fly between vehicles and crows by day, bats by night. More arrive as your flight continues. Avoid the ground and the top of the sky.</p></div></li>
           <li><span>03</span><div><strong>Go one better</strong><p>Each vehicle or bird passed earns a point. Beat your personal best.</p></div></li>
         </ol>
         <p class="help-note">P / Escape to pause. Your flight also pauses when you leave the tab or window.</p>

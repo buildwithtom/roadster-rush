@@ -1,17 +1,18 @@
 import { lightingAt, blendColor, glow } from './lighting.js';
-import { obstacleShape, crowPose } from '../obstacles.js';
-const C={autoBody:'#d7ad36',hood:'#233c32',glass:'#adcbc0',frame:'#374d3b',seat:'#644936',busBody:'#bb6146',luggage:'#a49570',wood:'#82613f',crate:'#a5814b',greens:'#799442',tomato:'#cb6845',cow:'#e6d2aa',muzzle:'#b79879',cowLeg:'#c6b28c',horn:'#766347',tyre:'#293d34',crow:'#253832',wing:'#3f4b43',feather:'#35453b',beak:'#535d49'};
+import { obstacleShape, crowPose, batWingOutline } from '../obstacles.js';
+const C={autoBody:'#d7ad36',hood:'#233c32',glass:'#adcbc0',frame:'#374d3b',seat:'#644936',busBody:'#bb6146',luggage:'#a49570',wood:'#82613f',crate:'#a5814b',greens:'#799442',tomato:'#cb6845',cow:'#e6d2aa',muzzle:'#b79879',cowLeg:'#c6b28c',horn:'#766347',tyre:'#293d34',crow:'#253832',wing:'#3f4b43',feather:'#35453b',beak:'#535d49',bat:'#302e3b',batMembrane:'#55465f',batTail:'#55465f',batEar:'#44364e'};
 function rect(c,color,x,y,w,h){c.fillStyle=color;c.fillRect(x,y,w,h);}
 function ellipse(c,color,x,y,rx,ry=rx){c.fillStyle=color;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fill();}
 function line(c,color,width,points){c.strokeStyle=color;c.lineWidth=width;c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.stroke();}
 function paint(c,p,scene){
-  const bird=['crow','wing','feather','beak'].includes(p.material);
-  const color=blendColor(C[p.material],bird?'#95aab6':'#18334a',scene.night*(bird ? .65 : .32));
+  const bat=p.material.startsWith('bat');
+  const bird=bat||['crow','wing','feather','beak'].includes(p.material);
+  const color=blendColor(C[p.material],bat?'#b0a9bd':bird?'#95aab6':'#18334a',scene.night*(bat ? .3 : bird ? .65 : .32));
   c.fillStyle=color;
   if(p.shape==='rect')c.fillRect(p.x,p.y,p.width,p.height);
   else if(p.shape==='ellipse')ellipse(c,color,p.x,p.y,p.rx,p.ry);
   else {c.beginPath();p.points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fill();}
-  if(bird&&scene.night){c.save();c.globalAlpha=scene.night*.45;c.strokeStyle='#c5d5d6';c.lineWidth=.8;c.stroke();c.restore();}
+  if(bird&&scene.night&&!(p.material==='batMembrane'&&p.points?.length===3)){c.save();c.globalAlpha=scene.night*.45;c.strokeStyle='#c5d5d6';c.lineWidth=.8;c.stroke();c.restore();}
 }
 function text(c,words,x,y,size,color){c.font=`bold ${size}px Arial`;c.textAlign='center';c.fillStyle=color;c.fillText(words,x,y);}
 function hubs(c,positions){for(const x of positions){ellipse(c,'#8e9a82',x,464,5);ellipse(c,'#d2c9a7',x,464,2);}}
@@ -76,8 +77,25 @@ export function drawObstacle(c,o,scene=lightingAt()){
   if(o.kind==='cow')cowDetails(c);
   if(o.kind==='crow'){
     const {y,flap}=crowPose(o);
-    ellipse(c,'#c3c7a8',15,y-5,1.3);
-    line(c,'#5c6658',1,[[33,y-2],[41,y+flap-12],[51,y+flap-8]]);
+    if(o.appearance==='bat'){
+      c.lineJoin='miter';c.miterLimit=3;
+      for(const side of [-1,1]){
+        const outline=batWingOutline(o,side),mirror=x=>side<0?65-x:x;
+        line(c,blendColor('#8b719d','#b6a4c1',scene.night*.6),.8,[...outline,outline[0]]);
+        // Three thin finger ribs end at the membrane tips; no triangle grid.
+        c.save();c.globalAlpha=.5;
+        line(c,'#9d85ad',.6,[[mirror(36),y-3],[mirror(45),y-20+flap*.35],[mirror(62),y-10+flap*.35]]);
+        line(c,'#9d85ad',.6,[[mirror(36),y-3],[mirror(53),y+3]]);
+        line(c,'#9d85ad',.6,[[mirror(36),y-3],[mirror(44),y+8]]);
+        c.restore();
+      }
+      // A short face and two small eyes stay readable without a bird-like beak.
+      ellipse(c,'#bf9cba',27.5,y-17,1.2,3);ellipse(c,'#bf9cba',37.5,y-17,1.2,3);
+      ellipse(c,'#e8d6a9',30,y-11,1);ellipse(c,'#e8d6a9',35,y-11,1);
+    }else{
+      ellipse(c,'#c3c7a8',15,y-5,1.3);
+      line(c,'#5c6658',1,[[33,y-2],[41,y+flap-12],[51,y+flap-8]]);
+    }
   }
   if(scene.lights>0&&(o.kind==='bus'||o.kind==='rickshaw')){
     const bus=o.kind==='bus',x=bus?169:97,y=bus?440:446;

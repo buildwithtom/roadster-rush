@@ -314,14 +314,15 @@ function streetBase(c, distance) {
 // preserving the sky gradient and avoiding rectangular dark bands at rooflines.
 let streetLayer;
 export function drawStreet(c, distance, scene) {
-  if (!scene?.night) { streetBase(c,distance);return; }
+  const shade = (scene?.night ?? 0) * .68 + (scene?.rain ? .12 : 0);
+  if (!shade) { streetBase(c,distance);return; }
   if (!streetLayer) {
     streetLayer=typeof OffscreenCanvas!=='undefined'?new OffscreenCanvas(960,540):document.createElement('canvas');
     streetLayer.width=960;streetLayer.height=540;
   }
   const layer=streetLayer.getContext('2d');
   layer.clearRect(0,0,960,540);streetBase(layer,distance);
-  layer.save();layer.globalCompositeOperation='source-atop';layer.globalAlpha=scene.night*.68;
+  layer.save();layer.globalCompositeOperation='source-atop';layer.globalAlpha=shade;
   layer.fillStyle='#122b46';layer.fillRect(0,0,960,540);layer.restore();
   c.drawImage(streetLayer,0,0);
 }

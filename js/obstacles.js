@@ -56,13 +56,65 @@ function crow(o,parts) {
   parts.push(poly([[11,y-6],[3,y-2],[12,y]],'beak'));
   parts.push(poly([[28,y],[40,y+flap-18],[58,y+flap-9],[41,y+4]],'wing'));
 }
+export function batWingOutline(o, side = 1) {
+  const {y,flap}=crowPose(o),lift=flap*.35;
+  // A broad, slightly banked view shows both wings at gameplay size. The
+  // outline stays spread at every flap instead of collapsing into a bird shape.
+  const root=[36,y-4],wrist=[45,y-20+lift],tip=[62,y-10+lift];
+  const outline=[root,wrist,tip];
+  const scallop=(from,control,to)=>{
+    for(const t of [.25,.5,.75,1]){
+      const s=1-t;
+      outline.push([s*s*from[0]+2*s*t*control[0]+t*t*to[0],s*s*from[1]+2*s*t*control[1]+t*t*to[1]]);
+    }
+  };
+  const finger=[53,y+3],heel=[44,y+8];
+  scallop(tip,[45,y-8+lift],finger);
+  scallop(finger,[44,y-3],heel);
+  outline.push([36,y+4]);
+  return side<0?outline.map(([x,py])=>[65-x,py]):outline;
+}
+const turn=(a,b,c)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
+function triangulate(points) {
+  // Ear clipping preserves the scalloped cutouts; a triangle fan would fill
+  // some of those empty notches and create invisible collision corners.
+  const area=points.reduce((sum,a,i)=>{const b=points[(i+1)%points.length];return sum+a[0]*b[1]-b[0]*a[1];},0);
+  const sign=area>=0?1:-1,remaining=points.map((_,i)=>i),triangles=[];
+  while(remaining.length>3){
+    let clipped=false;
+    for(let i=0;i<remaining.length;i++){
+      const ai=remaining[(i+remaining.length-1)%remaining.length],bi=remaining[i],ci=remaining[(i+1)%remaining.length];
+      const a=points[ai],b=points[bi],c=points[ci];
+      if(turn(a,b,c)*sign<=1e-8)continue;
+      const occupied=remaining.some(index=>{
+        if(index===ai||index===bi||index===ci)return false;
+        const p=points[index];return turn(a,b,p)*sign>=-1e-8&&turn(b,c,p)*sign>=-1e-8&&turn(c,a,p)*sign>=-1e-8;
+      });
+      if(occupied)continue;
+      triangles.push([a,b,c]);remaining.splice(i,1);clipped=true;break;
+    }
+    if(!clipped)throw new Error('Invalid bat wing outline');
+  }
+  triangles.push(remaining.map(i=>points[i]));return triangles;
+}
+function bat(o,parts) {
+  const {y}=crowPose(o);
+  // Membrane wings sit behind a compact furry torso. No beak, muzzle, or
+  // feather tail: prominent ears and the two scalloped wings carry the shape.
+  for(const side of [-1,1])for(const triangle of triangulate(batWingOutline(o,side)))parts.push(poly(triangle,'batMembrane'));
+  parts.push(poly([[29,y+4],[36,y+4],[32.5,y+9]],'batTail'));
+  parts.push(ellipse(32.5,y-1,5,10,'bat'));
+  parts.push(ellipse(32.5,y-11,6.5,6,'bat'));
+  parts.push(poly([[26,y-12],[25,y-24],[32,y-16]],'batEar'));
+  parts.push(poly([[33,y-16],[40,y-24],[39,y-12]],'batEar'));
+}
 export function obstacleShape(o) {
   const parts=[];
   switch(o.kind) {
     case 'bus':bus(0,parts);break;
     case 'cow':cow(0,parts);break;
     case 'cart':cart(0,parts);break;
-    case 'crow':crow(o,parts);break;
+    case 'crow':(o.appearance==='bat'?bat:crow)(o,parts);break;
     default:rickshaw(0,parts);
   }
   return { parts };
