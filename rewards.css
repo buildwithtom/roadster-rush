@@ -1,0 +1,109 @@
+/* Flight tickets, cut from the same racing poster as the title. */
+.over-screen, .pause-screen { background: #102d2acd; backdrop-filter: blur(6px); padding: 26px 22px; }
+.arcade[data-screen="over"] .fullscreen { display: none; }
+.flight-ticket {
+  --ticket-ink: #193b35;
+  --ticket-paper: #fff0c5;
+  --ticket-orange: #ed633a;
+  position: relative; width: min(460px, 100%); min-width: 0; padding: 22px 30px 18px;
+  color: var(--ticket-ink); background: var(--ticket-paper);
+  border: 2px solid var(--ticket-ink); box-shadow: 9px 10px 0 #081f1ac9;
+  text-align: center;
+}
+.flight-ticket::before { content: ''; position: absolute; inset: 5px; border: 1px solid #193b3529; pointer-events: none; }
+.ticket-heading { display: flex; justify-content: space-between; gap: 12px; padding-bottom: 14px; border-bottom: 1px dashed #193b3566; font: bold 12px var(--font-ui); letter-spacing: 0; }
+.flight-ticket h2 { margin: 22px 0 10px; white-space: nowrap; font: italic 900 clamp(46px, 9vw, 64px)/1 Impact, 'Arial Black', sans-serif; letter-spacing: -2px; transform: rotate(-3deg); text-shadow: 2px 2px 0 #193b3526; }
+.flight-ticket h2 span { color: var(--ticket-orange); }
+.record-stamp { position: relative; width: max-content; max-width: 100%; margin: 18px auto 12px; padding: 7px 10px; border: 2px solid var(--ticket-ink); color: var(--ticket-ink); background: #ffd15e; box-shadow: 3px 3px 0 var(--ticket-ink); transform: rotate(-3deg); font: bold 12px var(--font-ui); letter-spacing: .1px; }
+.run-result { padding: 12px 0 15px; }
+.run-result > .label { display: block; font-size: 13px; letter-spacing: 0; }
+.run-result > strong { display: block; margin: 0; font: 900 clamp(80px, 17vw, 116px)/1.08 Impact, 'Arial Black', sans-serif; letter-spacing: -2px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.run-result p { margin: 4px 0 0; font: 13px var(--font-ui); letter-spacing: 0; }
+.run-result p strong { margin-left: 9px; font-size: 16px; }
+.over-message { min-height: 36px; max-width: 290px; margin: 0 auto 20px; font: 14px/1.4 var(--font-ui); }
+.ticket-actions { display: grid; gap: 9px; }
+.retry-button { display: flex; align-items: center; justify-content: center; gap: 13px; min-height: 57px; padding: 12px; color: var(--ticket-ink); border: 2px solid var(--ticket-ink); border-radius: 1px; background: #ffd15e; box-shadow: 4px 4px 0 var(--ticket-ink); font: italic 900 27px/1 Impact, 'Arial Black', sans-serif; letter-spacing: .4px; white-space: nowrap; }
+.retry-button:hover { background: #ffe198; }
+.retry-button:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ticket-ink); }
+.flight-ticket button:focus-visible { outline: 3px solid var(--ticket-ink); outline-offset: 5px; }
+.title-return { min-height: 44px; border: 0; background: transparent; color: var(--ticket-ink); font: bold 14px var(--font-ui); text-decoration: underline; text-underline-offset: 4px; }
+.title-return:hover { color: #a33e21; }
+.ticket-shortcut { margin: 5px 0 0; font: 12px var(--font-ui); letter-spacing: 0; opacity: .7; }
+.arcade[data-theme="mars"] .over-screen, .arcade[data-theme="mars"] .pause-screen { background: #202538d9; }
+.arcade[data-theme="mars"] .flight-ticket { --ticket-ink: #252d43; --ticket-orange: #ce4a2a; }
+.celebration-canvas { z-index: 3; pointer-events: none; }
+.milestone { position: absolute; z-index: 1; pointer-events: none; left: max(28px, env(safe-area-inset-left)); top: max(117px, calc(env(safe-area-inset-top) + 93px)); display: flex; align-items: center; gap: 8px; margin: 0; padding: 7px 10px; border-left: 3px solid #ffd15e; background: #163330f0; color: #fff0c5; font: bold 13px var(--font-ui); box-shadow: 2px 3px 0 #102d2a44; }
+.milestone strong { color: #ffd15e; font-size: 14px; }
+.arcade[data-theme="mars"] .milestone { background: #252d43f0; }
+@media (orientation: portrait) {
+  .milestone { left: max(16px, env(safe-area-inset-left)); top: max(106px, calc(env(safe-area-inset-top) + 90px)); font-size: 12px; }
+}
+@media (max-width: 360px) {
+  .flight-ticket { padding: 18px 20px 14px; }
+  .flight-ticket h2 { font-size: 40px; }
+  .ticket-heading { font-size: 11px; letter-spacing: 0; }
+  .retry-button { font-size: 22px; gap: 10px; padding: 10px; letter-spacing: 0; }
+}
+@media (max-height: 650px) and (orientation: portrait) {
+  .flight-ticket h2 { margin-top: 17px; }
+  .run-result > strong { font-size: 80px; }
+  .record-stamp { margin-top: 14px; font-size: 12px; }
+  .over-message { margin-bottom: 15px; }
+}
+@media (max-height: 650px) and (orientation: landscape) {
+  .over-screen, .pause-screen { padding: 14px 22px; }
+  .flight-ticket { width: min(650px, 100%); padding: 16px 24px 14px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 30px; align-items: center; }
+  .ticket-heading { grid-column: 1 / -1; padding-bottom: 10px; }
+  .flight-ticket h2 { grid-column: 1; grid-row: 2; font-size: 47px; margin: 16px 0 5px; }
+  .run-result { grid-column: 1; grid-row: 3 / 6; padding: 8px 0 0; }
+  .run-result > strong { font-size: 78px; }
+  .record-stamp { grid-column: 2; grid-row: 2; font-size: 11px; letter-spacing: 0; margin: 14px auto 6px; padding: 6px; }
+  .over-message { grid-column: 2; grid-row: 3; font-size: 13px; margin: 10px 0; min-height: 0; }
+  .ticket-actions { grid-column: 2; grid-row: 4; gap: 4px; }
+  .retry-button { font-size: 23px; min-height: 48px; gap: 10px; padding: 10px; }
+  .title-return { min-height: 38px; }
+  .ticket-shortcut { grid-column: 2; grid-row: 5; margin: 5px 0; font-size: 13px; }
+  .milestone { top: max(85px, calc(env(safe-area-inset-top) + 73px)); left: max(16px, env(safe-area-inset-left)); font-size: 12px; }
+}
+
+@media (max-height: 350px) and (orientation: landscape) {
+  .flight-ticket { padding-top: 12px; padding-bottom: 12px; }
+  .ticket-heading { padding-bottom: 8px; }
+  .flight-ticket h2 { font-size: 42px; margin-top: 12px; margin-bottom: 4px; }
+  .over-message { margin-top: 8px; margin-bottom: 8px; }
+  .record-stamp { margin-top: 10px; }
+}
+
+/* Pause is a saved moment in the current flight, with quieter score details. */
+.pause-kicker { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 25px 0 0; font: bold 12px var(--font-ui); letter-spacing: 0; }
+.pause-bars { display: inline-block; width: 11px; height: 12px; border-left: 4px solid currentColor; border-right: 4px solid currentColor; }
+.pause-ticket h2 { margin-top: 12px; margin-bottom: 18px; }
+.pause-message { max-width: 290px; min-height: 36px; margin: 0 auto 20px; font: 14px/1.4 var(--font-ui); }
+.pause-stats { display: grid; grid-template-columns: 1fr 1fr; margin: 0 0 24px; padding: 16px 0; border-top: 1px dashed #193b3555; border-bottom: 1px dashed #193b3555; }
+.pause-stats > div + div { border-left: 1px solid #193b3533; }
+.pause-stats dt { font: 12px var(--font-ui); letter-spacing: 0; }
+.pause-stats dd { margin: 6px 0 0; font: 900 34px/1 Impact, 'Arial Black', sans-serif; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.pause-stats > div + div dd { font-size: 28px; padding-top: 6px; }
+@media (max-width: 360px) {
+  .pause-ticket .retry-button { font-size: 21px; }
+  .pause-stats dt { font-size: 11px; letter-spacing: 0; }
+}
+@media (max-height: 650px) and (orientation: portrait) {
+  .pause-kicker { margin-top: 18px; }
+  .pause-ticket h2 { margin-top: 10px; margin-bottom: 12px; }
+  .pause-message { margin-bottom: 14px; }
+  .pause-stats { padding: 12px 0; margin-bottom: 18px; }
+}
+@media (max-height: 650px) and (orientation: landscape) {
+  .pause-kicker { grid-column: 1; grid-row: 2; margin: 18px 0 0; font-size: 13px; }
+  .pause-ticket h2 { grid-column: 1; grid-row: 3; font-size: 54px; margin: 10px 0 15px; }
+  .pause-message { grid-column: 2; grid-row: 2 / 4; align-self: end; margin: 14px 0 12px; min-height: 36px; font-size: 13px; }
+  .pause-stats { grid-column: 1; grid-row: 4 / 6; margin: 0; padding: 14px 0; }
+  .pause-ticket .ticket-actions { grid-row: 4; }
+  .pause-ticket .ticket-shortcut { grid-row: 5; }
+}
+@media (max-height: 350px) and (orientation: landscape) {
+  .pause-kicker { margin-top: 12px; }
+  .pause-ticket h2 { font-size: 46px; margin-top: 8px; margin-bottom: 10px; }
+  .pause-stats { padding: 10px 0; }
+}

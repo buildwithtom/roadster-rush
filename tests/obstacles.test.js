@@ -42,6 +42,19 @@ test('rounded cow contours and sloped bus nose have no rectangular ghost collisi
   assert.equal(hitsObstacle({x:168,y:380,width:4,height:4},{x:0,kind:'bus'}),false);
   assert.equal(hitsObstacle({x:168,y:440,width:3,height:3},{x:0,kind:'bus'}),true);
 });
+test('rickshaw canopy, windscreen, step and wheels collide while its doorway and sloping corners stay open',()=>{
+  const auto={...createEncounter(0),x:0};
+  assert.equal(auto.width,105);
+  const bounds=obstacleShape(auto).parts.map(partBounds);
+  assert.equal(Math.min(...bounds.map(b=>b.y)),397);
+  assert.equal(Math.max(...bounds.map(b=>b.y+b.height)),474);
+  for(const [x,y]of [[30,402],[80,425],[40,454],[90,464],[98,456]]) {
+    assert.equal(hitsObstacle({x,y,width:2,height:2},auto),true,`solid at ${x},${y}`);
+  }
+  for(const [x,y]of [[40,420],[40,442],[3,398],[99,432],[50,465]]) {
+    assert.equal(hitsObstacle({x,y,width:3,height:3},auto),false,`empty at ${x},${y}`);
+  }
+});
 test('polygon and ellipse collision reject empty corners and touching edges',()=>{
   const e={shape:'ellipse',x:10,y:10,rx:10,ry:10};
   assert.equal(intersectsPart({x:0,y:0,width:2,height:2},e),false);

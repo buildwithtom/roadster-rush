@@ -1,5 +1,6 @@
 // Encounter geometry is shared by rendering and collision detection. Vehicle
 // dimensions are fixed; layout variation never stretches an animal or vehicle.
+import { marsObstacleShape } from './mars-obstacles.js';
 export const OBSTACLE_TYPES = Object.freeze(['rickshaw', 'cart', 'cow', 'bus', 'crow']);
 const FLOOR = 474;
 const rect = (x, y, width, height, material) => ({ shape:'rect', x, y, width, height, material });
@@ -13,12 +14,21 @@ export function partBounds(p) {
 }
 function wheel(x, parts) { parts.push(ellipse(x, FLOOR-10, 10, 10, 'tyre')); }
 function rickshaw(x, parts) {
-  parts.push(poly([[x+3,440],[x+87,440],[x+99,445],[x+103,459],[x+3,459]],'autoBody'));
-  parts.push(poly([[x+5,440],[x+9,411],[x+19,405],[x+20,440]],'autoBody'));
-  parts.push(rect(x+62,409,5,31,'frame'),rect(x+21,434,36,7,'seat'));
-  parts.push(poly([[x+5,412],[x+8,405],[x+15,400],[x+27,397],[x+54,397],[x+65,400],[x+75,408],[x+64,410]],'hood'));
-  parts.push(poly([[x+67,411],[x+75,417],[x+83,436],[x+68,433]],'glass'));
-  wheel(x+23,parts);wheel(x+85,parts);
+  // Separate rear quarter, low boarding step and rounded front scudo. The
+  // open passenger doorway is genuinely empty, including for collisions.
+  parts.push(poly([[x+5,438],[x+30,438],[x+34,457],[x+5,457]],'autoGreen'));
+  parts.push(rect(x+28,452,45,7,'autoGreen'));
+  parts.push(poly([[x+74,432],[x+84,431],[x+91,433],[x+97,438],[x+100,445],[x+101,453],[x+98,459],[x+78,459],[x+73,453],[x+70,444]],'autoBody'));
+  parts.push(poly([[x+7,411],[x+14,409],[x+20,438],[x+8,438]],'hood'));
+  parts.push(rect(x+19,419,7,17,'seat'),rect(x+25,432,25,5,'seat'));
+  parts.push(rect(x+62,438,3,14,'frame'),rect(x+59,428,7,12,'seat'));
+  parts.push(poly([[x+62,411],[x+67,412],[x+72,437],[x+67,441]],'frame'));
+  // Sloping windscreen surround joins the roof directly to the front cowl.
+  parts.push(poly([[x+66,409],[x+77,410],[x+84,419],[x+92,437],[x+83,438],[x+68,417]],'autoBody'));
+  parts.push(poly([[x+70,414],[x+76,415],[x+81,422],[x+86,433],[x+80,431]],'glass'));
+  parts.push(poly([[x+5,412],[x+6,407],[x+8,403],[x+12,400],[x+17,398],[x+24,397],[x+54,397],[x+60,398],[x+66,400],[x+71,403],[x+76,407],[x+79,413]],'hood'));
+  parts.push(rect(x+87,448,4,16,'frame'),rect(x+96,455,7,4,'frame'));
+  wheel(x+23,parts);wheel(x+90,parts);
 }
 function bus(x, parts) {
   parts.push(poly([[x,452],[x,382],[x+6,374],[x+152,374],[x+165,382],[x+174,429],[x+174,460],[x+2,460]],'busBody'));
@@ -109,6 +119,7 @@ function bat(o,parts) {
   parts.push(poly([[33,y-16],[40,y-24],[39,y-12]],'batEar'));
 }
 export function obstacleShape(o) {
+  if (o.environment === 'mars') return marsObstacleShape(o);
   const parts=[];
   switch(o.kind) {
     case 'bus':bus(0,parts);break;

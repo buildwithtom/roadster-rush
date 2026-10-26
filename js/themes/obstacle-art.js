@@ -1,6 +1,6 @@
 import { lightingAt, blendColor, glow } from './lighting.js';
 import { obstacleShape, crowPose, batWingOutline } from '../obstacles.js';
-const C={autoBody:'#d7ad36',hood:'#233c32',glass:'#adcbc0',frame:'#374d3b',seat:'#644936',busBody:'#bb6146',luggage:'#a49570',wood:'#82613f',crate:'#a5814b',greens:'#799442',tomato:'#cb6845',cow:'#e6d2aa',muzzle:'#b79879',cowLeg:'#c6b28c',horn:'#766347',tyre:'#293d34',crow:'#253832',wing:'#3f4b43',feather:'#35453b',beak:'#535d49',bat:'#302e3b',batMembrane:'#55465f',batTail:'#55465f',batEar:'#44364e'};
+const C={autoBody:'#e3b843',autoGreen:'#47754d',hood:'#263a31',glass:'#92b6ad',frame:'#374d3b',seat:'#644936',busBody:'#bb6146',luggage:'#a49570',wood:'#82613f',crate:'#a5814b',greens:'#799442',tomato:'#cb6845',cow:'#e6d2aa',muzzle:'#b79879',cowLeg:'#c6b28c',horn:'#766347',tyre:'#293d34',crow:'#253832',wing:'#3f4b43',feather:'#35453b',beak:'#535d49',bat:'#302e3b',batMembrane:'#55465f',batTail:'#55465f',batEar:'#44364e'};
 function rect(c,color,x,y,w,h){c.fillStyle=color;c.fillRect(x,y,w,h);}
 function ellipse(c,color,x,y,rx,ry=rx){c.fillStyle=color;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fill();}
 function line(c,color,width,points){c.strokeStyle=color;c.lineWidth=width;c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.stroke();}
@@ -16,20 +16,38 @@ function paint(c,p,scene){
 }
 function text(c,words,x,y,size,color){c.font=`bold ${size}px Arial`;c.textAlign='center';c.fillStyle=color;c.fillText(words,x,y);}
 function hubs(c,positions){for(const x of positions){ellipse(c,'#8e9a82',x,464,5);ellipse(c,'#d2c9a7',x,464,2);}}
-function autoDetails(c){
-  // Side profile: rounded black fabric hood, open passenger bay, sloped
-  // windscreen, yellow nose and green lower body. All proportions are fixed.
-  rect(c,'#3e6946',5,449,95,9);rect(c,'#e9c65d',6,443,91,3);
-  line(c,'#a18c55',1,[[10,406],[27,401],[54,401],[65,405]]);
-  // Fabric hood seam, rolled passenger-side curtain and a small front mudguard.
-  rect(c,'#59634b',12,412,5,20);
-  line(c,'#bfa15b',1,[[18,415],[18,432]]);
-  line(c,'#274a36',2,[[77,456],[80,453],[91,453],[96,457]]);
-  rect(c,'#506c49',40,450,12,5);
-  line(c,'#d3b04f',2,[[20,417],[20,433],[57,433]]);
-  line(c,'#435747',2,[[72,422],[77,433]]);
-  rect(c,'#f1dfab',94,444,5,4);rect(c,'#b34935',4,446,3,4);
-  hubs(c,[23,85]);
+function autoDetails(c,parts,scene){
+  const shade=color=>blendColor(color,'#18334a',scene.night*.32);
+  // Clip trim to the same solids used by collisions. Nothing paints across
+  // the open doorway or extends the sloping roof/windscreen silhouette.
+  c.save();c.beginPath();
+  for(const p of parts){
+    if(p.shape==='rect')c.rect(p.x,p.y,p.width,p.height);
+    else if(p.shape==='ellipse'){c.moveTo(p.x+p.rx,p.y);c.ellipse(p.x,p.y,p.rx,p.ry,0,0,Math.PI*2);}
+    else {p.points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();}
+  }
+  c.clip();
+  // Fabric seams and the rolled curtain at the rear edge of the opening.
+  line(c,shade('#64715a'),1,[[10,407],[25,401],[53,401],[66,405],[74,410]]);
+  line(c,shade('#142c25'),2,[[8,411],[62,412],[78,413]]);
+  line(c,shade('#7b8060'),1,[[12,414],[16,434]]);
+  line(c,shade('#b8a27a'),1,[[20,421],[22,431],[26,434],[49,434]]);
+  // Rear engine panel, low entry step, and small louvres above the back wheel.
+  rect(c,shade('#e3b843'),5,439,27,3);
+  rect(c,shade('#365d40'),7,449,25,9);
+  for(let i=0;i<3;i++)line(c,shade('#2d4b35'),1,[[9,445+i*2],[18,445+i*2]]);
+  line(c,shade('#c3b67c'),1.5,[[34,453],[70,453]]);
+  // Rounded yellow front, broad glass, a wiper and a tucked-in front fender.
+  line(c,shade('#f2cf69'),3,[[86,435],[94,440],[98,448]]);
+  line(c,shade('#ae893a'),1,[[77,439],[80,448],[94,451]]);
+  line(c,shade('#d6e2cf'),1,[[72,415],[77,422],[82,430]]);
+  line(c,shade('#334b43'),1.2,[[83,431],[77,422]]);
+  c.strokeStyle=shade('#263c31');c.lineWidth=2.5;c.beginPath();
+  c.ellipse(90,461,12,10,0,Math.PI,Math.PI*2);c.stroke();
+  rect(c,shade('#f7e5b3'),95,442,5,4);
+  rect(c,shade('#b64b35'),5,445,3,5);
+  rect(c,shade('#d2bd6f'),82,454,8,3);
+  hubs(c,[23,90]);c.restore();
 }
 function busDetails(c,x){
   rect(c,'#d7bf83',x+2,389,157,34);rect(c,'#e0b25d',x+2,437,170,5);
@@ -70,9 +88,10 @@ function cowDetails(c){
 }
 export function drawObstacle(c,o,scene=lightingAt()){
   c.save();c.translate(o.x,0);
-  for(const p of obstacleShape(o).parts)paint(c,p,scene);
+  const parts=obstacleShape(o).parts;
+  for(const p of parts)paint(c,p,scene);
   if(o.kind==='bus')busDetails(c,0);
-  if(o.kind==='rickshaw'||!o.kind)autoDetails(c);
+  if(o.kind==='rickshaw'||!o.kind)autoDetails(c,parts,scene);
   if(o.kind==='cart')cartDetails(c,0);
   if(o.kind==='cow')cowDetails(c);
   if(o.kind==='crow'){
@@ -102,7 +121,7 @@ export function drawObstacle(c,o,scene=lightingAt()){
     c.save();c.globalAlpha=scene.lights;
     glow(c,x,y,24,'#ffe2a1',.8);glow(c,5,448,12,'#ec8864',.7);
     c.fillStyle='#ffeab0';c.fillRect(x-3,y-2,6,4);
-    c.fillStyle='#ec9978';c.fillRect(3,446,3,4);
+    c.fillStyle='#ec9978';c.fillRect(bus?3:5,446,3,4);
     const beam=c.createLinearGradient(x,y,x+105,487);
     beam.addColorStop(0,'#f7d58d26');beam.addColorStop(1,'#f7d58d00');
     c.fillStyle=beam;c.beginPath();c.moveTo(x,y-2);c.lineTo(x+108,y-1);c.lineTo(x+120,489);c.lineTo(x,y+3);c.fill();

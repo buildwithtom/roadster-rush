@@ -1,4 +1,5 @@
 import { blendColor } from './lighting.js';
+import { skyY } from '../playfield.js';
 
 const wrap = (value, size) => ((value % size) + size) % size;
 const noise = seed => { const n = Math.sin(seed * 91.7 + 28.3) * 43758.5453; return n - Math.floor(n); };
@@ -56,7 +57,7 @@ export function drawRainClouds(c, distance, scene) {
     c.beginPath();
     for (let i = first; i < first + 8; i++) {
       const x = i * 180 - drift;
-      const y = 10 + layer * 62 + noise(i + layer * 41) * 25;
+      const y = skyY(scene,10 + layer * 62 + noise(i + layer * 41) * 25);
       c.moveTo(x + 132, y); c.ellipse(x, y, 132, 33 + noise(i + 71) * 20, 0, 0, Math.PI * 2);
     }
     c.fill();
