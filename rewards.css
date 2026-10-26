@@ -26,8 +26,9 @@
 .retry-button:hover { background: #ffe198; }
 .retry-button:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ticket-ink); }
 .flight-ticket button:focus-visible { outline: 3px solid var(--ticket-ink); outline-offset: 5px; }
-.title-return { min-height: 44px; border: 0; background: transparent; color: var(--ticket-ink); font: bold 14px var(--font-ui); text-decoration: underline; text-underline-offset: 4px; }
-.title-return:hover { color: #a33e21; }
+.title-return { min-height: 44px; padding: 10px 14px; border: 2px solid var(--ticket-ink); border-radius: 1px; background: #e8dcba; color: var(--ticket-ink); box-shadow: 2px 2px 0 var(--ticket-ink); font: bold 15px var(--font-ui); }
+.title-return:hover { background: var(--ticket-ink); color: var(--ticket-paper); }
+.title-return:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ticket-ink); }
 .ticket-shortcut { margin: 5px 0 0; font: 12px var(--font-ui); letter-spacing: 0; opacity: .7; }
 .arcade[data-theme="mars"] .over-screen, .arcade[data-theme="mars"] .pause-screen { background: #202538d9; }
 .arcade[data-theme="mars"] .flight-ticket { --ticket-ink: #252d43; --ticket-orange: #ce4a2a; }
@@ -61,7 +62,7 @@
   .over-message { grid-column: 2; grid-row: 3; font-size: 13px; margin: 10px 0; min-height: 0; }
   .ticket-actions { grid-column: 2; grid-row: 4; gap: 4px; }
   .retry-button { font-size: 23px; min-height: 48px; gap: 10px; padding: 10px; }
-  .title-return { min-height: 38px; }
+  .title-return { min-height: 44px; padding: 8px 12px; }
   .ticket-shortcut { grid-column: 2; grid-row: 5; margin: 5px 0; font-size: 13px; }
   .milestone { top: max(85px, calc(env(safe-area-inset-top) + 73px)); left: max(16px, env(safe-area-inset-left)); font-size: 12px; }
 }

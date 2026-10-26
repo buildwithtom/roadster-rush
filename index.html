@@ -45,14 +45,15 @@
           </div>
         </fieldset>
         <button class="start-button" id="play" type="button" aria-label="Play Roadster Rush"><span class="start-triangle" aria-hidden="true"></span><span>LET’S FLY</span><kbd>SPACE</kbd></button>
+        <button class="mode-button" id="flight-setup" type="button" aria-controls="setup-screen"><span>Modes &amp; Weather</span><span id="mode-summary">Day · Clear</span></button>
         <p class="start-instruction">Press Space or tap to fly</p>
       </div>
-      <footer class="start-footer"><button id="how-to-play" type="button">How to play</button><button id="flight-setup" type="button">Flight setup</button></footer>
+      <footer class="start-footer"><button id="how-to-play" type="button">How to play</button></footer>
     </section>
 
     <section class="screen centered-screen" id="setup-screen" aria-labelledby="setup-title" hidden>
       <div class="panel setup-panel">
-        <h2 id="setup-title">Flight setup</h2>
+        <h2 id="setup-title">Modes &amp; Weather</h2>
         <div class="setup-options">
           <fieldset class="starting-mode" aria-describedby="cycle-description">
             <legend>Start at</legend>
@@ -71,7 +72,7 @@
             <p id="weather-description">Dry roads and clear skies.</p>
           </fieldset>
         </div>
-        <button class="primary" id="setup-back" type="button">Ready to fly</button>
+        <button class="primary" id="setup-back" type="button">Main Menu</button>
       </div>
     </section>
 
@@ -84,7 +85,7 @@
           <li><span>3</span><div><strong>Beat your best</strong><p>Each obstacle you pass earns one point.</p></div></li>
         </ol>
         <p class="help-note">P or Esc pauses. Leaving the tab pauses too.</p>
-        <button class="primary" id="help-back" type="button">Back to title</button>
+        <button class="primary" id="help-back" type="button">Main Menu</button>
       </div>
     </section>
 
@@ -95,7 +96,7 @@
         <h2 id="pause-title"><span>PAUSED</span></h2>
         <p class="pause-message" id="pause-copy">Ready when you are.</p>
         <dl class="pause-stats"><div><dt>Score so far</dt><dd id="pause-score">00</dd></div><div><dt>Personal best</dt><dd id="pause-best">00</dd></div></dl>
-        <div class="ticket-actions"><button class="retry-button" id="resume" type="button"><span class="start-triangle" aria-hidden="true"></span>RESUME FLIGHT</button><button class="title-return" id="pause-menu" type="button">Back to title</button></div>
+        <div class="ticket-actions"><button class="retry-button" id="resume" type="button"><span class="start-triangle" aria-hidden="true"></span>RESUME FLIGHT</button><button class="title-return" id="pause-menu" type="button">Main Menu</button></div>
         <p class="ticket-shortcut">P, Esc or Space to resume</p>
       </div>
     </section>
@@ -107,7 +108,7 @@
         <p class="record-stamp" id="over-tag" hidden>NEW PERSONAL BEST</p>
         <div class="run-result"><span class="label">Your score</span><strong id="final-score">00</strong><p>Personal best <strong id="final-best">00</strong></p></div>
         <p class="over-message" id="over-message">Short taps help you stay in control.</p>
-        <div class="ticket-actions"><button class="retry-button" id="retry" type="button"><span class="start-triangle" aria-hidden="true"></span>ONE MORE RUN</button><button class="title-return" id="over-menu" type="button">Back to title</button></div>
+        <div class="ticket-actions"><button class="retry-button" id="retry" type="button"><span class="start-triangle" aria-hidden="true"></span>ONE MORE RUN</button><button class="title-return" id="over-menu" type="button">Main Menu</button></div>
         <p class="ticket-shortcut">Space to try again</p>
       </div>
     </section>

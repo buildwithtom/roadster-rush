@@ -123,11 +123,13 @@ function gameOver() {
   $('#over-world').textContent = runTheme.name;
   screens.over.classList.toggle('is-record', record);
   showScreen('over', '#retry');
-  $('#announcer').textContent = `Game over. Score ${game.score}. Personal best ${best}. ${record ? 'New personal best! ' : ''}${message} Choose One more run or Back to title.`;
+  $('#announcer').textContent = `Game over. Score ${game.score}. Personal best ${best}. ${record ? 'New personal best! ' : ''}${message} Choose One more run or Main Menu.`;
 }
 
-function updateWeatherDescription() {
-  $('#weather-description').textContent = theme.weatherModes.find(mode => mode.value === weather).description;
+function updateModeSummary() {
+  const mode = theme.weatherModes.find(mode => mode.value === weather);
+  $('#weather-description').textContent = mode.description;
+  $('#mode-summary').textContent = `${startingMode === 'night' ? 'Night' : 'Day'} · ${mode.label}`;
 }
 function updateThemeMenu() {
   arcade.dataset.theme = theme.id;
@@ -144,7 +146,7 @@ function updateThemeMenu() {
     input.checked = mode.value === weather;
     input.closest('label').querySelector('.weather-name').textContent = mode.label;
   });
-  updateWeatherDescription();
+  updateModeSummary();
 }
 document.querySelectorAll('input[name="environment"]').forEach(input => input.addEventListener('change', () => {
   if (screen !== 'menu' || !input.checked) return;
@@ -161,6 +163,7 @@ document.querySelectorAll('input[name="starting-mode"]').forEach(input => {
     $('#cycle-description').textContent = startingMode === 'night'
       ? 'Start at night. Daylight follows as you fly.'
       : 'Start in daylight. Night follows as you fly.';
+    updateModeSummary();
     $('#announcer').textContent = `Start at ${startingMode}. Day and night will cycle throughout your flight.`;
   });
 });
@@ -168,7 +171,7 @@ document.querySelectorAll('input[name="weather"]').forEach(input => {
   input.addEventListener('change', () => {
     if (!input.checked || screen !== 'setup') return;
     weather = input.value;
-    updateWeatherDescription();
+    updateModeSummary();
     const mode = theme.weatherModes.find(mode => mode.value === weather);
     $('#announcer').textContent = `${mode.label} weather selected. Day and night will continue to cycle.`;
   });
@@ -276,11 +279,15 @@ function render() {
     // The title-screen hero uses the real car renderer. Its scale, hover and
     // air bursts are presentation only; the simulation stays in ready state.
     const portrait = stage.clientWidth < stage.clientHeight;
+    const compactPortrait = portrait && stage.clientHeight <= 650;
     const pixelRatio = canvas.width / stage.clientWidth;
-    const width = Math.min(stage.clientWidth * (portrait ? .66 : .31), portrait ? 290 : 390);
+    const widthRatio = portrait ? (compactPortrait ? .58 : .66) : .31;
+    const width = Math.min(stage.clientWidth * widthRatio, portrait ? 290 : 390);
     const compact = !portrait && stage.clientHeight <= 800;
     const cx = (canvas.width * (compact ? .72 : .5) - x) / scale;
-    const cy = (canvas.height * (compact ? stage.clientHeight > 550 ? .43 : .36 : portrait ? .49 : .57) - y) / scale;
+    const heightRatio = portrait ? (compactPortrait ? .445 : .49)
+      : compact ? (stage.clientHeight > 550 ? .43 : .36) : .57;
+    const cy = (canvas.height * heightRatio - y) / scale;
     ctx.save(); ctx.translate(cx, cy + Math.sin(previewTime * 2.4) * 3);
     const zoom = width * pixelRatio / (78 * scale); ctx.scale(zoom, zoom);
     theme.car(ctx, { ...game.car, x: -39, y: -15, velocity: -130, thrust: .1 + Math.sin(previewTime * 4) * .035 }, previewTime, scene);
